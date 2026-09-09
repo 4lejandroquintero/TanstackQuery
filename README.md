@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js + TanStack Query — Demo entrevista
 
-## Getting Started
+Mini proyecto en `C:\nextjs-tanstack-demo` para practicar lo que suele salir en una prueba live de **Next.js (App Router)** + **TanStack Query**.
 
-First, run the development server:
+## Arrancar
 
 ```bash
+cd C:\nextjs-tanstack-demo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Qué incluye (mapa mental)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Ruta | Qué practicas |
+|------|----------------|
+| `/` | Conceptos + cheat sheet para hablar en voz alta |
+| `/users` | `useQuery` + `useMutation` + `invalidateQueries` |
+| `/users/[id]` | Ruta dinámica + query con `enabled` |
+| `/server-demo` | Server Component async (sin hooks) |
+| `/api/users` | Route Handlers GET/POST |
+| `/api/users/[id]` | Route Handlers GET/DELETE |
 
-## Learn More
+## Cómo explicar TanStack en 30 segundos
 
-To learn more about Next.js, take a look at the following resources:
+1. **QueryClientProvider** envuelve la app (en `Providers`, client component).
+2. **useQuery({ queryKey, queryFn })** pide datos, cachea y te da `isPending` / `isError` / `data`.
+3. **useMutation** escribe (POST/DELETE). En `onSuccess` llamas **invalidateQueries** para que la lista se actualice sola.
+4. **queryKey** es la identidad del cache (`["users"]`, `["users", 1]`).
+5. **staleTime** = cuánto tiempo los datos se consideran frescos (menos refetch).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Server vs Client (pregunta típica)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Server Component** (default): fetch en servidor, menos JS al browser, bueno para SEO y secretos.
+- **Client Component** (`"use client"`): estado, eventos, **TanStack Query**.
+- Patrón común: page/server layout + hijos client solo donde hace falta.
 
-## Deploy on Vercel
+## Durante la prueba
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Habla mientras codeas: “voy a crear el route handler… luego el queryKey… invalido el cache…”
+- Docs oficiales permitidas — úsalas sin miedo.
+- No hace falta MySQL/Workbench para esta demo (store en memoria).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Stack
+
+- Next.js 16 (App Router) + React 19
+- TypeScript + Tailwind
+- `@tanstack/react-query` + DevTools (ícono abajo a la izquierda en dev)
