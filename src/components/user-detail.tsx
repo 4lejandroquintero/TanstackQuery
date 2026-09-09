@@ -2,8 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { ArrowLeftIcon } from "lucide-react";
 import { queryKeys } from "@/lib/query-keys";
 import { usersApi } from "@/lib/users-api";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function UserDetail({ id }: { id: number }) {
   const { data, isPending, isError, error } = useQuery({
@@ -13,51 +25,64 @@ export function UserDetail({ id }: { id: number }) {
   });
 
   if (isPending) {
-    return <p className="text-zinc-500">Cargando detalle...</p>;
+    return (
+      <Card>
+        <CardContent>
+          <p className="text-muted-foreground">Cargando detalle...</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (isError) {
     return (
       <div className="space-y-3">
-        <p className="text-red-600">{error.message}</p>
-        <Link href="/users" className="text-sky-700 underline">
-          Volver al listado
-        </Link>
+        <Alert variant="destructive">
+          <AlertTitle>No se pudo cargar</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+        <Button variant="outline" asChild>
+          <Link href="/users">Volver al listado</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6">
-      <div>
-        <p className="text-sm text-zinc-500">queryKey: users / {id}</p>
-        <h1 className="text-2xl font-semibold text-zinc-900">{data.name}</h1>
-        <p className="text-zinc-600">{data.email}</p>
-      </div>
-
-      <dl className="grid gap-2 text-sm sm:grid-cols-2">
-        <div>
-          <dt className="text-zinc-500">Rol</dt>
-          <dd className="font-medium text-zinc-900">{data.role}</dd>
-        </div>
-        <div>
-          <dt className="text-zinc-500">Creado</dt>
-          <dd className="font-medium text-zinc-900">
-            {new Date(data.createdAt).toLocaleString("es-CO")}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-zinc-500">ID</dt>
-          <dd className="font-medium text-zinc-900">{data.id}</dd>
-        </div>
-      </dl>
-
-      <Link
-        href="/users"
-        className="inline-block text-sm text-sky-700 hover:underline"
-      >
-        ← Volver al listado
-      </Link>
-    </article>
+    <Card>
+      <CardHeader>
+        <CardDescription>queryKey: users / {id}</CardDescription>
+        <CardTitle className="text-2xl">{data.name}</CardTitle>
+        <p className="text-muted-foreground">{data.email}</p>
+      </CardHeader>
+      <CardContent>
+        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-muted-foreground">Rol</dt>
+            <dd className="mt-1">
+              <Badge variant="secondary">{data.role}</Badge>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Creado</dt>
+            <dd className="mt-1 font-medium">
+              {new Date(data.createdAt).toLocaleString("es-CO")}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">ID</dt>
+            <dd className="mt-1 font-medium">{data.id}</dd>
+          </div>
+        </dl>
+      </CardContent>
+      <CardFooter>
+        <Button variant="outline" asChild>
+          <Link href="/users">
+            <ArrowLeftIcon />
+            Volver al listado
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

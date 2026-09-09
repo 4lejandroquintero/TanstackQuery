@@ -1,4 +1,13 @@
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const concepts = [
   {
@@ -25,59 +34,64 @@ const concepts = [
     title: "TanStack Query — useMutation",
     body: "Crear/eliminar. En onSuccess → invalidateQueries para refrescar listas sin lógica manual rara.",
   },
+  {
+    title: "shadcn/ui",
+    body: "No es un npm de componentes opacos: copias el código a components/ui. Combina Tailwind + Radix. nxx shadcn add button.",
+  },
 ];
 
 export default function HomePage() {
   return (
     <div className="space-y-8">
-      <section className="space-y-3">
-        <p className="text-sm font-medium text-sky-700">Práctica entrevista</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-          Next.js + TanStack Query
+      <section className="space-y-4">
+        <Badge variant="secondary">Práctica entrevista</Badge>
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">
+          Next.js + TanStack Query + shadcn/ui
         </h1>
-        <p className="max-w-2xl text-zinc-600">
-          Proyecto chico pero completo: listado CRUD de usuarios con Route
-          Handlers, Client Components y cache de TanStack. En la prueba habla en
-          voz alta mientras resuelves — eso es lo que quieren ver.
+        <p className="max-w-2xl text-muted-foreground">
+          Proyecto chico pero completo: CRUD de usuarios con Route Handlers,
+          Client Components, cache de TanStack y UI con shadcn. En la prueba
+          habla en voz alta mientras resuelves.
         </p>
-        <Link
-          href="/users"
-          className="inline-flex rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
-        >
-          Ir a Usuarios (live demo)
-        </Link>
+        <Button asChild>
+          <Link href="/users">Ir a Usuarios (live demo)</Link>
+        </Button>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
         {concepts.map((c) => (
-          <article
-            key={c.title}
-            className="rounded-lg border border-zinc-200 bg-white p-4"
-          >
-            <h2 className="font-semibold text-zinc-900">{c.title}</h2>
-            <p className="mt-2 text-sm text-zinc-600">{c.body}</p>
-          </article>
+          <Card key={c.title} size="sm">
+            <CardHeader>
+              <CardTitle>{c.title}</CardTitle>
+              <CardDescription>{c.body}</CardDescription>
+            </CardHeader>
+          </Card>
         ))}
       </section>
 
-      <section className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-        <p className="font-semibold">Cheat sheet para hablar en la prueba</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>
-            Server Component = fetch en el servidor, SEO, sin bundle de hooks.
-          </li>
-          <li>
-            Client Component = interactividad. TanStack Query solo corre aquí.
-          </li>
-          <li>
-            staleTime controla cuánto tiempo los datos se consideran frescos.
-          </li>
-          <li>
-            invalidateQueries marca el cache como viejo y dispara refetch.
-          </li>
-          <li>Puedes mirar la docs oficial durante la prueba — está ok.</li>
-        </ul>
-      </section>
+      <Alert>
+        <AlertTitle>Cheat sheet para hablar en la prueba</AlertTitle>
+        <AlertDescription>
+          <ul className="mt-2 list-disc space-y-1 pl-4">
+            <li>
+              Server Component = fetch en el servidor, SEO, sin bundle de hooks.
+            </li>
+            <li>
+              Client Component = interactividad. TanStack Query solo corre aquí.
+            </li>
+            <li>
+              staleTime controla cuánto tiempo los datos se consideran frescos.
+            </li>
+            <li>
+              invalidateQueries marca el cache como viejo y dispara refetch.
+            </li>
+            <li>
+              shadcn = componentes en tu repo (`components/ui`), no una black
+              box.
+            </li>
+          </ul>
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

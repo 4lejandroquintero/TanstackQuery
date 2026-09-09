@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js + TanStack Query Demo",
+  title: "Next.js + TanStack + shadcn Demo",
   description:
-    "Mini proyecto para practicar App Router, Route Handlers y TanStack Query",
+    "Mini proyecto para practicar App Router, Route Handlers, TanStack Query y shadcn/ui",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-zinc-50 text-zinc-900">
+      <body className="flex min-h-full flex-col bg-background text-foreground">
         <Providers>
           <SiteHeader />
           <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">

@@ -5,6 +5,25 @@ import { useState } from "react";
 import { queryKeys } from "@/lib/query-keys";
 import type { User } from "@/lib/types";
 import { usersApi } from "@/lib/users-api";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function UserForm() {
   const queryClient = useQueryClient();
@@ -15,7 +34,6 @@ export function UserForm() {
   const createMutation = useMutation({
     mutationFn: usersApi.create,
     onSuccess: () => {
-      // Invalida el cache → useQuery vuelve a fetchear la lista
       queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
       setName("");
       setEmail("");
@@ -29,65 +47,73 @@ export function UserForm() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="space-y-3 rounded-lg border border-zinc-200 bg-white p-4"
-    >
-      <h2 className="text-lg font-semibold text-zinc-900">Crear usuario</h2>
-      <p className="text-sm text-zinc-500">
-        useMutation + invalidateQueries (patrón clásico de TanStack)
-      </p>
+    <Card>
+      <CardHeader>
+        <CardTitle>Crear usuario</CardTitle>
+        <CardDescription>
+          useMutation + invalidateQueries · UI con Input / Select / Button
+          (shadcn)
+        </CardDescription>
+      </CardHeader>
+      <form onSubmit={onSubmit}>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Nombre</Label>
+            <Input
+              id="name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Camila Ríos"
+            />
+          </div>
 
-      <label className="block text-sm">
-        <span className="text-zinc-700">Nombre</span>
-        <input
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2"
-          placeholder="Camila Ríos"
-        />
-      </label>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="camila@empresa.com"
+            />
+          </div>
 
-      <label className="block text-sm">
-        <span className="text-zinc-700">Email</span>
-        <input
-          required
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2"
-          placeholder="camila@empresa.com"
-        />
-      </label>
+          <div className="space-y-2">
+            <Label htmlFor="role">Rol</Label>
+            <Select
+              value={role}
+              onValueChange={(value) => setRole(value as User["role"])}
+            >
+              <SelectTrigger id="role" className="w-full">
+                <SelectValue placeholder="Elige un rol" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">admin</SelectItem>
+                <SelectItem value="user">user</SelectItem>
+                <SelectItem value="viewer">viewer</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <label className="block text-sm">
-        <span className="text-zinc-700">Rol</span>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value as User["role"])}
-          className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2"
-        >
-          <option value="admin">admin</option>
-          <option value="user">user</option>
-          <option value="viewer">viewer</option>
-        </select>
-      </label>
-
-      <button
-        type="submit"
-        disabled={createMutation.isPending}
-        className="rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:opacity-50"
-      >
-        {createMutation.isPending ? "Guardando..." : "Crear"}
-      </button>
-
-      {createMutation.isError ? (
-        <p className="text-sm text-red-600">{createMutation.error.message}</p>
-      ) : null}
-      {createMutation.isSuccess ? (
-        <p className="text-sm text-emerald-600">Usuario creado ✓</p>
-      ) : null}
-    </form>
+          {createMutation.isError ? (
+            <Alert variant="destructive">
+              <AlertDescription>{createMutation.error.message}</AlertDescription>
+            </Alert>
+          ) : null}
+          {createMutation.isSuccess ? (
+            <Alert>
+              <AlertDescription>Usuario creado ✓</AlertDescription>
+            </Alert>
+          ) : null}
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" disabled={createMutation.isPending}>
+            {createMutation.isPending ? "Guardando..." : "Crear"}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }
